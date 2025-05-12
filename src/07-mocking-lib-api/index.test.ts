@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosInstance } from 'axios';
 import { throttledGetDataFromApi } from './index';
 
 jest.mock('axios');
@@ -6,6 +6,7 @@ jest.mock('lodash', () => ({
   throttle: jest.fn((fn) => fn),
 }));
 const mockedAxios = axios as jest.Mocked<typeof axios>;
+
 const mockResponse = {
   userId: 1,
   id: 3,
@@ -15,17 +16,17 @@ const mockResponse = {
 
 describe('throttledGetDataFromApi', () => {
   const path = '/posts/3';
-  let instance: any;
+  let instance: Partial<jest.Mocked<AxiosInstance>>;
 
   beforeEach(() => {
     instance = {
       get: jest.fn().mockResolvedValue({ data: mockResponse }),
       interceptors: {
-        request: { use: jest.fn() },
-        response: { use: jest.fn() },
+        request: { use: jest.fn(), eject: jest.fn(), clear: jest.fn() },
+        response: { use: jest.fn(), eject: jest.fn(), clear: jest.fn() },
       },
-    } as any;
-    mockedAxios.create.mockReturnValue(instance);
+    };
+    mockedAxios.create.mockReturnValue(instance as any);
   });
 
   afterEach(() => {
