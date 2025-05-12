@@ -1,4 +1,3 @@
-
 import { simpleCalculator, Action } from './index';
 
 const testCases = [
